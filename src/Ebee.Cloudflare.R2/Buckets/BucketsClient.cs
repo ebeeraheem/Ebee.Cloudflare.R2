@@ -96,6 +96,7 @@ public class BucketsClient(IAmazonS3 s3Client) : IBucketsClient
         CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(request);
+        ArgumentException.ThrowIfNullOrEmpty(request.BucketName);
 
         try
         {

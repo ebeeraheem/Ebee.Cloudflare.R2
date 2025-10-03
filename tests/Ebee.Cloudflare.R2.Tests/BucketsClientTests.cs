@@ -305,12 +305,12 @@ public class BucketsClientTests
     {
         // Arrange
         var request = new R2DeleteBucketRequest { BucketName = "test-bucket" };
-        var response = Task.FromResult(new DeleteBucketResponse());
+        var response = new DeleteBucketResponse();
 
         _mockS3Client.Setup(x => x.DeleteBucketAsync(
             It.IsAny<string>(),
             It.IsAny<CancellationToken>()))
-            .Returns(response);
+            .ReturnsAsync(response);
 
         // Act
         var result = await _bucketsClient.DeleteBucketAsync(request);
@@ -334,6 +334,19 @@ public class BucketsClientTests
         // Assert
         await act.Should().ThrowAsync<ArgumentNullException>()
                  .WithParameterName("request");
+    }
+
+    [Fact]
+    public async Task DeleteBucketAsync_WithEmptyBucketName_ShouldThrowArgumentException()
+    {
+        // Arrange
+        var request = new R2DeleteBucketRequest { BucketName = string.Empty };
+
+        // Act
+        var act = async () => await _bucketsClient.DeleteBucketAsync(request);
+
+        // Assert
+        await act.Should().ThrowAsync<ArgumentException>();
     }
 
     [Fact]
@@ -423,7 +436,7 @@ public class BucketsClientTests
 
         // Assert
         var exception = await act.Should().ThrowAsync<R2Exception>()
-                 .WithMessage("An unexpected error occurred while deleting bucket 'test-bucket': General error");
+            .WithMessage("An unexpected error occurred while deleting bucket 'test-bucket': General error");
 
         exception.And.InnerException.Should().BeOfType<InvalidOperationException>()
             .Which.Message.Should().Be("General error");

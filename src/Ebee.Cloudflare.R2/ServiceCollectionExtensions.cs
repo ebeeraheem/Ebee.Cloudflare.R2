@@ -1,8 +1,9 @@
-﻿using Amazon;
-using Amazon.S3;
-using Ebee.Cloudflare.R2.Buckets;
-using Microsoft.Extensions.Configuration;
+﻿using Amazon.S3;
+using Amazon;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Configuration;
+using Ebee.Cloudflare.R2.Buckets;
+using Ebee.Cloudflare.R2.Objects;
 
 namespace Ebee.Cloudflare.R2;
 
@@ -126,6 +127,7 @@ public static class ServiceCollectionExtensions
                 new AmazonS3Client(options.AccessKeyId, options.SecretAccessKey, config));
 
             services.AddScoped<IBucketsClient, BucketsClient>();
+            services.AddScoped<IObjectsClient, ObjectsClient>();
             services.AddScoped<IR2Client, R2Client>();
         }
         else
@@ -134,6 +136,7 @@ public static class ServiceCollectionExtensions
                 new AmazonS3Client(options.AccessKeyId, options.SecretAccessKey, config));
 
             services.AddKeyedScoped<IBucketsClient, BucketsClient>(name);
+            services.AddKeyedScoped<IObjectsClient, ObjectsClient>(name);
             services.AddKeyedScoped<IR2Client, R2Client>(name);
         }
 

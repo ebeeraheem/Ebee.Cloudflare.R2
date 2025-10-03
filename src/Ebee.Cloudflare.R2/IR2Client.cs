@@ -1,4 +1,5 @@
 ﻿using Ebee.Cloudflare.R2.Buckets;
+using Ebee.Cloudflare.R2.Objects;
 
 namespace Ebee.Cloudflare.R2;
 
@@ -11,4 +12,9 @@ public interface IR2Client
     /// Gets the buckets client for bucket operations.
     /// </summary>
     IBucketsClient Buckets { get; }
+
+    /// <summary>
+    /// Gets the objects client for object operations.
+    /// </summary>
+    IObjectsClient Objects { get; }
 }

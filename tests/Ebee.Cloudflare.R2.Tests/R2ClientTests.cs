@@ -29,6 +29,7 @@ public class R2ClientTests
         var act = () => new R2Client(null!);
 
         // Assert
-        act.Should().Throw<ArgumentNullException>();
+        act.Should().Throw<ArgumentNullException>()
+           .WithParameterName("bucketsClient");
     }
 }

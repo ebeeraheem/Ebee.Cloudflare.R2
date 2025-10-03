@@ -12,7 +12,7 @@ public interface IBucketsClient
     /// </summary>
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>A task representing the asynchronous operation with the list of buckets.</returns>
-    Task<ListBucketsResponse> ListBucketsAsync(CancellationToken cancellationToken = default);
+    Task<R2ListBucketsResponse> ListBucketsAsync(CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Creates a new bucket in the R2 account.
@@ -27,8 +27,8 @@ public interface IBucketsClient
     /// var response = await bucketsClient.CreateBucketAsync(request);
     /// </code>
     /// </example>
-    Task<CreateBucketResponse> CreateBucketAsync(
-        CreateBucketRequest request,
+    Task<R2CreateBucketResponse> CreateBucketAsync(
+        R2CreateBucketRequest request,
         CancellationToken cancellationToken = default);
 
     /// <summary>
@@ -44,7 +44,7 @@ public interface IBucketsClient
     /// var response = await bucketsClient.DeleteBucketAsync(request);
     /// </code>
     /// </example>
-    Task<DeleteBucketResponse> DeleteBucketAsync(
-        DeleteBucketRequest request,
+    Task<R2DeleteBucketResponse> DeleteBucketAsync(
+        R2DeleteBucketRequest request,
         CancellationToken cancellationToken = default);
 }

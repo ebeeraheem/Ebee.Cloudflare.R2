@@ -3,7 +3,7 @@
 /// <summary>
 /// Request to delete an R2 bucket.
 /// </summary>
-public class DeleteBucketRequest
+public class R2DeleteBucketRequest
 {
     /// <summary>
     /// Gets or sets the name of the bucket to delete.

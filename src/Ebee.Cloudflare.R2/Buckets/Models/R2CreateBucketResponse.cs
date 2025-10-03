@@ -3,7 +3,7 @@
 /// <summary>
 /// Response from creating an R2 bucket.
 /// </summary>
-public class CreateBucketResponse
+public class R2CreateBucketResponse
 {
     /// <summary>
     /// Gets or sets the name of the created bucket.

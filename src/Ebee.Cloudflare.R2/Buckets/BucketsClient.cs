@@ -1,9 +1,9 @@
 ﻿using Amazon.S3;
 using Amazon.S3.Model;
 using Ebee.Cloudflare.R2.Buckets.Models;
-using DeleteBucketRequest = Ebee.Cloudflare.R2.Buckets.Models.DeleteBucketRequest;
-using DeleteBucketResponse = Ebee.Cloudflare.R2.Buckets.Models.DeleteBucketResponse;
-using ListBucketsResponse = Ebee.Cloudflare.R2.Buckets.Models.ListBucketsResponse;
+using R2DeleteBucketRequest = Ebee.Cloudflare.R2.Buckets.Models.R2DeleteBucketRequest;
+using R2DeleteBucketResponse = Ebee.Cloudflare.R2.Buckets.Models.R2DeleteBucketResponse;
+using R2ListBucketsResponse = Ebee.Cloudflare.R2.Buckets.Models.R2ListBucketsResponse;
 
 namespace Ebee.Cloudflare.R2.Buckets;
 
@@ -20,7 +20,7 @@ public class BucketsClient(IAmazonS3 s3Client) : IBucketsClient
         ?? throw new ArgumentNullException(nameof(s3Client));
 
     /// <inheritdoc />
-    public async Task<ListBucketsResponse> ListBucketsAsync(CancellationToken cancellationToken = default)
+    public async Task<R2ListBucketsResponse> ListBucketsAsync(CancellationToken cancellationToken = default)
     {
         try
         {
@@ -30,7 +30,7 @@ public class BucketsClient(IAmazonS3 s3Client) : IBucketsClient
             return new ListBucketsResponse
             {
                 Buckets = [.. response.Buckets
-                .Select(bucket => new BucketInfoResponse
+                .Select(bucket => new R2BucketInfoResponse
                 {
                     Name = bucket.BucketName,
                     CreationDate = bucket.CreationDate
@@ -49,8 +49,8 @@ public class BucketsClient(IAmazonS3 s3Client) : IBucketsClient
     }
 
     /// <inheritdoc />
-    public async Task<CreateBucketResponse> CreateBucketAsync(
-        CreateBucketRequest request,
+    public async Task<R2CreateBucketResponse> CreateBucketAsync(
+        R2CreateBucketRequest request,
         CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(request);
@@ -64,7 +64,7 @@ public class BucketsClient(IAmazonS3 s3Client) : IBucketsClient
 
             var response = await _s3Client.PutBucketAsync(putBucketRequest, cancellationToken);
 
-            return new CreateBucketResponse
+            return new R2CreateBucketResponse
             {
                 BucketName = request.BucketName,
                 Location = response.Location,
@@ -94,8 +94,8 @@ public class BucketsClient(IAmazonS3 s3Client) : IBucketsClient
     }
 
     /// <inheritdoc />
-    public async Task<DeleteBucketResponse> DeleteBucketAsync(
-        DeleteBucketRequest request,
+    public async Task<R2DeleteBucketResponse> DeleteBucketAsync(
+        R2DeleteBucketRequest request,
         CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(request);

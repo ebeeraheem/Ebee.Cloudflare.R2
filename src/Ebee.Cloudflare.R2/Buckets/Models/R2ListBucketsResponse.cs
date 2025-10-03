@@ -3,12 +3,12 @@
 /// <summary>
 /// Response containing a list of R2 buckets.
 /// </summary>
-public class ListBucketsResponse
+public class R2ListBucketsResponse
 {
     /// <summary>
     /// Gets or sets the list of buckets.
     /// </summary>
-    public List<BucketInfoResponse> Buckets { get; set; } = [];
+    public List<R2BucketInfoResponse> Buckets { get; set; } = [];
 
     /// <summary>
     /// Gets or sets the owner information.

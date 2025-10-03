@@ -3,7 +3,7 @@
 /// <summary>
 /// Request to create a new R2 bucket.
 /// </summary>
-public class CreateBucketRequest
+public class R2CreateBucketRequest
 {
     /// <summary>
     /// Gets or sets the name of the bucket to create.

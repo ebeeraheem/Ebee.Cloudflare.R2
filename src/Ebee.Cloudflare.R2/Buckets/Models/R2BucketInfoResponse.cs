@@ -3,7 +3,7 @@
 /// <summary>
 /// Represents information about an R2 bucket.
 /// </summary>
-public class BucketInfoResponse
+public class R2BucketInfoResponse
 {
     /// <summary>
     /// Gets or sets the bucket name.

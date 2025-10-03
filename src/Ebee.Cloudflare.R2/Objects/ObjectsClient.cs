@@ -135,7 +135,7 @@ public class ObjectsClient(IAmazonS3 s3Client) : IObjectsClient
                 CacheControl = response.Headers.CacheControl,
                 ContentDisposition = response.Headers.ContentDisposition,
                 ContentEncoding = response.Headers.ContentEncoding,
-                Expires = response.ExpiresString
+                Expires = ParseExpiresStringToDateTime(response.ExpiresString),
             };
         }
         catch (AmazonS3Exception ex) when (ex.ErrorCode == "NoSuchBucket")
@@ -449,6 +449,20 @@ public class ObjectsClient(IAmazonS3 s3Client) : IObjectsClient
             DateTimeStyles.RoundtripKind,
             out var lastModified)
             ? lastModified : DateTime.UtcNow;
+    }
+
+    private static DateTime? ParseExpiresStringToDateTime(string? expiresString)
+    {
+        if (string.IsNullOrWhiteSpace(expiresString))
+            return null;
+
+        // Try parsing using invariant culture and roundtrip kind
+        return DateTime.TryParse(
+            expiresString,
+            CultureInfo.InvariantCulture,
+            DateTimeStyles.RoundtripKind,
+            out var expires)
+            ? expires : null;
     }
 
     private static S3MetadataDirective GetS3MetadataDirective(string? directive) =>

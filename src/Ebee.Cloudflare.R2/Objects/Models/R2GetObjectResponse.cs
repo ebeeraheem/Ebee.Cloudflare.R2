@@ -75,7 +75,7 @@ public class R2GetObjectResponse : IDisposable
     /// <summary>
     /// Gets or sets the expires header.
     /// </summary>
-    public string? Expires { get; set; }
+    public DateTime? Expires { get; set; }
 
     /// <summary>
     /// Finalizer for R2GetObjectResponse.

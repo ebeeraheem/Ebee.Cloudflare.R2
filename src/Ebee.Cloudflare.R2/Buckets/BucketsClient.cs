@@ -1,6 +1,8 @@
 ﻿using Amazon.S3;
 using Amazon.S3.Model;
 using Ebee.Cloudflare.R2.Buckets.Models;
+using DeleteBucketRequest = Ebee.Cloudflare.R2.Buckets.Models.DeleteBucketRequest;
+using DeleteBucketResponse = Ebee.Cloudflare.R2.Buckets.Models.DeleteBucketResponse;
 using ListBucketsResponse = Ebee.Cloudflare.R2.Buckets.Models.ListBucketsResponse;
 
 namespace Ebee.Cloudflare.R2.Buckets;
@@ -43,6 +45,85 @@ public class BucketsClient(IAmazonS3 s3Client) : IBucketsClient
         catch (Exception ex)
         {
             throw new R2Exception($"An unexpected error occurred while listing buckets: {ex.Message}", ex);
+        }
+    }
+
+    /// <inheritdoc />
+    public async Task<CreateBucketResponse> CreateBucketAsync(
+        CreateBucketRequest request,
+        CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(request);
+
+        try
+        {
+            var putBucketRequest = new PutBucketRequest
+            {
+                BucketName = request.BucketName
+            };
+
+            var response = await _s3Client.PutBucketAsync(putBucketRequest, cancellationToken);
+
+            return new CreateBucketResponse
+            {
+                BucketName = request.BucketName,
+                Location = response.Location,
+                CreationDate = DateTime.UtcNow
+            };
+        }
+        catch (AmazonS3Exception ex) when (ex.ErrorCode == "BucketAlreadyExists")
+        {
+            throw new R2Exception($"Bucket '{request.BucketName}' already exists.", ex);
+        }
+        catch (AmazonS3Exception ex) when (ex.ErrorCode == "BucketAlreadyOwnedByYou")
+        {
+            throw new R2Exception($"Bucket '{request.BucketName}' already owned by you.", ex);
+        }
+        catch (AmazonS3Exception ex) when (ex.ErrorCode == "InvalidBucketName")
+        {
+            throw new R2Exception($"Invalid bucket name '{request.BucketName}': {ex.Message}", ex);
+        }
+        catch (AmazonS3Exception ex)
+        {
+            throw new R2Exception($"Failed to create bucket '{request.BucketName}': {ex.Message}", ex);
+        }
+        catch (Exception ex)
+        {
+            throw new R2Exception($"An unexpected error occurred while creating bucket '{request.BucketName}': {ex.Message}", ex);
+        }
+    }
+
+    /// <inheritdoc />
+    public async Task<DeleteBucketResponse> DeleteBucketAsync(
+        DeleteBucketRequest request,
+        CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(request);
+
+        try
+        {
+            await _s3Client.DeleteBucketAsync(request.BucketName, cancellationToken);
+
+            return new DeleteBucketResponse
+            {
+                BucketName = request.BucketName
+            };
+        }
+        catch (AmazonS3Exception ex) when (ex.ErrorCode == "NoSuchBucket")
+        {
+            throw new R2Exception($"Bucket '{request.BucketName}' does not exist.", ex);
+        }
+        catch (AmazonS3Exception ex) when (ex.ErrorCode == "BucketNotEmpty")
+        {
+            throw new R2Exception($"Bucket '{request.BucketName}' is not empty and cannot be deleted.", ex);
+        }
+        catch (AmazonS3Exception ex)
+        {
+            throw new R2Exception($"Failed to delete bucket '{request.BucketName}': {ex.Message}", ex);
+        }
+        catch (Exception ex)
+        {
+            throw new R2Exception($"An unexpected error occurred while deleting bucket '{request.BucketName}': {ex.Message}", ex);
         }
     }
 }

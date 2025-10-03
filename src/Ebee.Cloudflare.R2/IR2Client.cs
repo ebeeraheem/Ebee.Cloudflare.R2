@@ -1,5 +1,6 @@
 ﻿using Ebee.Cloudflare.R2.Buckets;
 using Ebee.Cloudflare.R2.Objects;
+using Ebee.Cloudflare.R2.SignedUrls;
 
 namespace Ebee.Cloudflare.R2;
 
@@ -17,4 +18,9 @@ public interface IR2Client
     /// Gets the objects client for object operations.
     /// </summary>
     IObjectsClient Objects { get; }
+
+    /// <summary>
+    /// Gets the signed URLs client for signed URL operations.
+    /// </summary>
+    ISignedUrlsClient SignedUrls { get; }
 }

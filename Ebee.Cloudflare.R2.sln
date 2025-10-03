@@ -11,6 +11,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{0AB3BF05
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ebee.Cloudflare.R2.Tests", "tests\Ebee.Cloudflare.R2.Tests\Ebee.Cloudflare.R2.Tests.csproj", "{8419C85A-55C4-4DA7-B5E1-8F2D115D8053}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{8EC462FD-D22E-90A8-E5CE-7E832BA40C5D}"
+	ProjectSection(SolutionItems) = preProject
+		docs\buckets.md = docs\buckets.md
+		docs\objects.md = docs\objects.md
+		docs\signedurls.md = docs\signedurls.md
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -52,5 +59,8 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{756A95C5-1C30-47A3-AC63-9E71B66C05E5} = {827E0CD3-B72D-47B6-A68D-7590B98EB39B}
 		{8419C85A-55C4-4DA7-B5E1-8F2D115D8053} = {0AB3BF05-4346-4AA6-1389-037BE0695223}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {CF04DC23-7751-46B8-B211-2D365DBCE0DB}
 	EndGlobalSection
 EndGlobal

@@ -151,6 +151,7 @@ public class BucketsClientTests
             .Which.Message.Should().Be("General error");
     }
 
+    // CreateBucketAsync Tests
     [Fact]
     public async Task CreateBucketAsync_WithValidRequest_ShouldReturnCreateResponse()
     {
@@ -296,5 +297,135 @@ public class BucketsClientTests
         // Assert
         await act.Should().ThrowAsync<R2Exception>()
                  .WithMessage("An unexpected error occurred while creating bucket 'test-bucket': General error");
+    }
+
+    // DeleteBucketAsync Tests
+    [Fact]
+    public async Task DeleteBucketAsync_WithValidRequest_ShouldReturnDeleteResponse()
+    {
+        // Arrange
+        var request = new R2DeleteBucketRequest { BucketName = "test-bucket" };
+        var response = Task.FromResult(new DeleteBucketResponse());
+
+        _mockS3Client.Setup(x => x.DeleteBucketAsync(
+            It.IsAny<string>(),
+            It.IsAny<CancellationToken>()))
+            .Returns(response);
+
+        // Act
+        var result = await _bucketsClient.DeleteBucketAsync(request);
+
+        // Assert
+        result.Should().NotBeNull();
+        result.BucketName.Should().Be("test-bucket");
+
+        _mockS3Client.Verify(x => x.DeleteBucketAsync(
+            "test-bucket",
+            It.IsAny<CancellationToken>()),
+            Times.Once);
+    }
+
+    [Fact]
+    public async Task DeleteBucketAsync_WithNullRequest_ShouldThrowArgumentNullException()
+    {
+        // Act
+        var act = async () => await _bucketsClient.DeleteBucketAsync(null!);
+
+        // Assert
+        await act.Should().ThrowAsync<ArgumentNullException>()
+                 .WithParameterName("request");
+    }
+
+    [Fact]
+    public async Task DeleteBucketAsync_WithNoSuchBucketError_ShouldThrowR2Exception()
+    {
+        // Arrange
+        var request = new R2DeleteBucketRequest { BucketName = "non-existent-bucket" };
+        var s3Exception = new AmazonS3Exception("Bucket not found") { ErrorCode = "NoSuchBucket" };
+
+        _mockS3Client.Setup(x => x.DeleteBucketAsync(
+            It.IsAny<string>(),
+            It.IsAny<CancellationToken>()))
+            .ThrowsAsync(s3Exception);
+
+        // Act
+        var act = async () => await _bucketsClient.DeleteBucketAsync(request);
+
+        // Assert
+        var exception = await act.Should().ThrowAsync<R2Exception>()
+                 .WithMessage("Bucket 'non-existent-bucket' does not exist.");
+
+        exception.And.InnerException.Should().BeOfType<AmazonS3Exception>()
+            .Which.Message.Should().Be("Bucket not found");
+    }
+
+    [Fact]
+    public async Task DeleteBucketAsync_WithBucketNotEmptyError_ShouldThrowR2Exception()
+    {
+        // Arrange
+        var request = new R2DeleteBucketRequest { BucketName = "non-empty-bucket" };
+        var s3Exception =
+            new AmazonS3Exception("Bucket not empty") { ErrorCode = "BucketNotEmpty" };
+
+        _mockS3Client.Setup(x => x.DeleteBucketAsync(
+            It.IsAny<string>(),
+            It.IsAny<CancellationToken>()))
+            .ThrowsAsync(s3Exception);
+
+        // Act
+        var act = async () => await _bucketsClient.DeleteBucketAsync(request);
+
+        // Assert
+        var exception = await act.Should().ThrowAsync<R2Exception>()
+                 .WithMessage("Bucket 'non-empty-bucket' is not empty and cannot be deleted.");
+
+        exception.And.InnerException.Should().BeOfType<AmazonS3Exception>()
+            .Which.Message.Should().Be("Bucket not empty");
+    }
+
+    [Fact]
+    public async Task DeleteBucketAsync_WithOtherAmazonS3Exception_ShouldThrowR2Exception()
+    {
+        // Arrange
+        var request = new R2DeleteBucketRequest { BucketName = "test-bucket" };
+        var s3Exception = new AmazonS3Exception("Other S3 error") { ErrorCode = "OtherError" };
+
+        _mockS3Client.Setup(x => x.DeleteBucketAsync(
+            It.IsAny<string>(),
+            It.IsAny<CancellationToken>()))
+            .ThrowsAsync(s3Exception);
+
+        // Act
+        var act = async () => await _bucketsClient.DeleteBucketAsync(request);
+
+        // Assert
+        var exception = await act.Should().ThrowAsync<R2Exception>()
+                 .WithMessage("Failed to delete bucket 'test-bucket': Other S3 error");
+
+        exception.And.InnerException.Should().BeOfType<AmazonS3Exception>()
+            .Which.Message.Should().Be("Other S3 error");
+    }
+
+    [Fact]
+    public async Task DeleteBucketAsync_WithGeneralException_ShouldThrowR2Exception()
+    {
+        // Arrange
+        var request = new R2DeleteBucketRequest { BucketName = "test-bucket" };
+        var generalException = new InvalidOperationException("General error");
+
+        _mockS3Client.Setup(x => x.DeleteBucketAsync(
+            It.IsAny<string>(),
+            It.IsAny<CancellationToken>()))
+            .ThrowsAsync(generalException);
+
+        // Act
+        var act = async () => await _bucketsClient.DeleteBucketAsync(request);
+
+        // Assert
+        var exception = await act.Should().ThrowAsync<R2Exception>()
+                 .WithMessage("An unexpected error occurred while deleting bucket 'test-bucket': General error");
+
+        exception.And.InnerException.Should().BeOfType<InvalidOperationException>()
+            .Which.Message.Should().Be("General error");
     }
 }

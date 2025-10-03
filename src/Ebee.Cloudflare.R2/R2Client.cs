@@ -1,4 +1,5 @@
 ﻿using Ebee.Cloudflare.R2.Buckets;
+using Ebee.Cloudflare.R2.MultipartUploads;
 using Ebee.Cloudflare.R2.Objects;
 using Ebee.Cloudflare.R2.SignedUrls;
 
@@ -13,10 +14,12 @@ namespace Ebee.Cloudflare.R2;
 /// <param name="bucketsClient">The buckets client.</param>
 /// <param name="objectsClient">The objects client.</param>
 /// <param name="signedUrlsClient">The signed URLs client.</param>
+/// <param name="multipartUploadsClient">The multipart uploads client.</param>
 public class R2Client(
     IBucketsClient bucketsClient,
     IObjectsClient objectsClient,
-    ISignedUrlsClient signedUrlsClient) : IR2Client
+    ISignedUrlsClient signedUrlsClient,
+    IMultipartUploadsClient multipartUploadsClient) : IR2Client
 {
     /// <inheritdoc />
     public IBucketsClient Buckets { get; } = bucketsClient
@@ -29,4 +32,8 @@ public class R2Client(
     /// <inheritdoc />
     public ISignedUrlsClient SignedUrls { get; } = signedUrlsClient
         ?? throw new ArgumentNullException(nameof(signedUrlsClient));
+
+    /// <inheritdoc />
+    public IMultipartUploadsClient MultipartUploads { get; } = multipartUploadsClient
+        ?? throw new ArgumentNullException(nameof(multipartUploadsClient));
 }

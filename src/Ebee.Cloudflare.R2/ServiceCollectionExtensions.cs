@@ -1,10 +1,11 @@
-﻿using Amazon.S3;
-using Amazon;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Configuration;
+﻿using Amazon;
+using Amazon.S3;
 using Ebee.Cloudflare.R2.Buckets;
+using Ebee.Cloudflare.R2.MultipartUploads;
 using Ebee.Cloudflare.R2.Objects;
 using Ebee.Cloudflare.R2.SignedUrls;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Ebee.Cloudflare.R2;
 
@@ -130,6 +131,7 @@ public static class ServiceCollectionExtensions
             services.AddScoped<IBucketsClient, BucketsClient>();
             services.AddScoped<IObjectsClient, ObjectsClient>();
             services.AddScoped<ISignedUrlsClient, SignedUrlsClient>();
+            services.AddScoped<IMultipartUploadsClient, MultipartUploadsClient>();
             services.AddScoped<IR2Client, R2Client>();
         }
         else
@@ -140,6 +142,7 @@ public static class ServiceCollectionExtensions
             services.AddKeyedScoped<IBucketsClient, BucketsClient>(name);
             services.AddKeyedScoped<IObjectsClient, ObjectsClient>(name);
             services.AddKeyedScoped<ISignedUrlsClient, SignedUrlsClient>(name);
+            services.AddKeyedScoped<IMultipartUploadsClient, MultipartUploadsClient>(name);
             services.AddKeyedScoped<IR2Client, R2Client>(name);
         }
 

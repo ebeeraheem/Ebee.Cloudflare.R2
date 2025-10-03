@@ -1,4 +1,5 @@
 ﻿using Ebee.Cloudflare.R2.Buckets;
+using Ebee.Cloudflare.R2.MultipartUploads;
 using Ebee.Cloudflare.R2.Objects;
 using Ebee.Cloudflare.R2.SignedUrls;
 
@@ -23,4 +24,9 @@ public interface IR2Client
     /// Gets the signed URLs client for signed URL operations.
     /// </summary>
     ISignedUrlsClient SignedUrls { get; }
+
+    /// <summary>
+    /// Gets the multipart uploads client for multipart upload operations.
+    /// </summary>
+    IMultipartUploadsClient MultipartUploads { get; }
 }

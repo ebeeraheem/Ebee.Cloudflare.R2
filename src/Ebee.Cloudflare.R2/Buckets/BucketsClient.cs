@@ -1,9 +1,6 @@
 ﻿using Amazon.S3;
 using Amazon.S3.Model;
 using Ebee.Cloudflare.R2.Buckets.Models;
-using R2DeleteBucketRequest = Ebee.Cloudflare.R2.Buckets.Models.R2DeleteBucketRequest;
-using R2DeleteBucketResponse = Ebee.Cloudflare.R2.Buckets.Models.R2DeleteBucketResponse;
-using R2ListBucketsResponse = Ebee.Cloudflare.R2.Buckets.Models.R2ListBucketsResponse;
 
 namespace Ebee.Cloudflare.R2.Buckets;
 
@@ -27,7 +24,7 @@ public class BucketsClient(IAmazonS3 s3Client) : IBucketsClient
             var request = new ListBucketsRequest();
             var response = await _s3Client.ListBucketsAsync(request, cancellationToken);
 
-            return new ListBucketsResponse
+            return new R2ListBucketsResponse
             {
                 Buckets = [.. response.Buckets
                 .Select(bucket => new R2BucketInfoResponse
@@ -104,7 +101,7 @@ public class BucketsClient(IAmazonS3 s3Client) : IBucketsClient
         {
             await _s3Client.DeleteBucketAsync(request.BucketName, cancellationToken);
 
-            return new DeleteBucketResponse
+            return new R2DeleteBucketResponse
             {
                 BucketName = request.BucketName
             };

@@ -428,7 +428,7 @@ public class R2InitiateMultipartUploadRequest
     public required string BucketName { get; set; }
     public required string Key { get; set; }
     public string? ContentType { get; set; }
-    public Dictionary<string, string> Metadata { get; set; } = new();
+    public Dictionary<string, string> Metadata { get; set; } = [];
     public string? ServerSideEncryption { get; set; }
     public string? StorageClass { get; set; }
     public string? CacheControl { get; set; }
@@ -579,7 +579,7 @@ public class R2ListPartsResponse
     public required string UploadId { get; set; }
     public List<R2PartInfoResponse> Parts { get; set; } = [];
     public int? MaxParts { get; set; }
-    public bool IsTruncated { get; set; }
+    public bool? IsTruncated { get; set; }
     public int? NextPartNumberMarker { get; set; }
     public string? StorageClass { get; set; }
     public string? Owner { get; set; }
@@ -590,10 +590,10 @@ public class R2ListPartsResponse
 ```csharp
 public class R2PartInfoResponse
 {
-    public int PartNumber { get; set; }
-    public required string ETag { get; set; }
-    public long Size { get; set; }
-    public DateTime LastModified { get; set; }
+    public int? PartNumber { get; set; }
+    public string? ETag { get; set; }
+    public long? Size { get; set; }
+    public DateTime? LastModified { get; set; }
 }
 ```
 
@@ -606,7 +606,7 @@ public class R2ListMultipartUploadsResponse
     public string? Prefix { get; set; }
     public string? Delimiter { get; set; }
     public int? MaxUploads { get; set; }
-    public bool IsTruncated { get; set; }
+    public bool? IsTruncated { get; set; }
     public string? NextKeyMarker { get; set; }
     public string? NextUploadIdMarker { get; set; }
     public List<string> CommonPrefixes { get; set; } = [];

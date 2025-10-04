@@ -178,7 +178,7 @@ public class R2DeleteBucketRequest
 ```csharp
 public class R2ListBucketsResponse
 {
-    public List<R2BucketInfoResponse> Buckets { get; set; }
+    public List<R2BucketInfoResponse> Buckets { get; set; } = [];
     public string? Owner { get; set; }
 }
 ```
@@ -188,7 +188,7 @@ public class R2ListBucketsResponse
 public class R2BucketInfoResponse
 {
     public required string Name { get; set; }
-    public DateTime CreationDate { get; set; }
+    public DateTime? CreationDate { get; set; }
 }
 ```
 

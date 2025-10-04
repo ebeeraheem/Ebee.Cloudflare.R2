@@ -206,23 +206,6 @@ Console.WriteLine($"Delete URL: {response.SignedUrl}");
 Console.WriteLine($"Expires at: {response.ExpiresAt}");
 ```
 
-### DELETE URL with Governance Bypass
-
-Delete objects protected by governance mode retention:
-
-```csharp
-var request = new R2GenerateDeleteSignedUrlRequest
-{
-    BucketName = "protected-bucket",
-    Key = "protected-document.pdf",
-    BypassGovernanceRetention = true,
-    ExpectedBucketOwner = "expected-owner-id",
-    ExpiresIn = TimeSpan.FromMinutes(5)
-};
-
-var response = _r2Client.SignedUrls.GenerateDeleteSignedUrl(request);
-```
-
 ### DELETE URL for Specific Version
 
 Delete a specific version of a versioned object:
@@ -395,15 +378,22 @@ public interface ISignedUrlsClient
 
 ### Request Models
 
-#### R2GenerateGetSignedUrlRequest
+#### R2GenerateSignedUrlRequest (Base Class)
 ```csharp
-public class R2GenerateGetSignedUrlRequest
+public abstract class R2GenerateSignedUrlRequest
 {
     public required string BucketName { get; set; }
     public required string Key { get; set; }
     public DateTime? Expires { get; set; }
     public TimeSpan? ExpiresIn { get; set; }
     public string? VersionId { get; set; }
+}
+```
+
+#### R2GenerateGetSignedUrlRequest
+```csharp
+public class R2GenerateGetSignedUrlRequest : R2GenerateSignedUrlRequest
+{
     public string? ResponseContentType { get; set; }
     public string? ResponseContentDisposition { get; set; }
     public string? ResponseCacheControl { get; set; }
@@ -413,34 +403,23 @@ public class R2GenerateGetSignedUrlRequest
 
 #### R2GeneratePutSignedUrlRequest
 ```csharp
-public class R2GeneratePutSignedUrlRequest
+public class R2GeneratePutSignedUrlRequest : R2GenerateSignedUrlRequest
 {
-    public required string BucketName { get; set; }
-    public required string Key { get; set; }
-    public DateTime? Expires { get; set; }
-    public TimeSpan? ExpiresIn { get; set; }
-    public string? VersionId { get; set; }
     public string? ContentType { get; set; }
+    public Dictionary<string, string> Metadata { get; set; } = [];
     public string? CacheControl { get; set; }
     public string? ContentDisposition { get; set; }
     public string? ContentEncoding { get; set; }
     public string? ServerSideEncryption { get; set; }
     public string? StorageClass { get; set; }
-    public Dictionary<string, string> Metadata { get; set; } = new();
 }
 ```
 
 #### R2GenerateDeleteSignedUrlRequest
 ```csharp
-public class R2GenerateDeleteSignedUrlRequest
+public class R2GenerateDeleteSignedUrlRequest : R2GenerateSignedUrlRequest
 {
-    public required string BucketName { get; set; }
-    public required string Key { get; set; }
-    public DateTime? Expires { get; set; }
-    public TimeSpan? ExpiresIn { get; set; }
-    public string? VersionId { get; set; }
-    public bool BypassGovernanceRetention { get; set; }
-    public string? ExpectedBucketOwner { get; set; }
+    // Inherits all properties from base class; no additional properties
 }
 ```
 

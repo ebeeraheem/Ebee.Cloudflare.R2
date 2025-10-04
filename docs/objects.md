@@ -329,19 +329,6 @@ var request = new R2DeleteObjectRequest
 var response = await _r2Client.Objects.DeleteObjectAsync(request);
 ```
 
-### Delete with Governance Bypass
-
-```csharp
-var request = new R2DeleteObjectRequest
-{
-    BucketName = "protected-bucket",
-    Key = "protected-file.txt",
-    BypassGovernanceRetention = true  // Bypass object lock governance mode
-};
-
-var response = await _r2Client.Objects.DeleteObjectAsync(request);
-```
-
 ## Error Handling
 
 All object operations may throw `R2Exception` with specific error scenarios:
@@ -427,7 +414,7 @@ public class R2PutObjectRequest
     public byte[]? ContentBytes { get; set; }
     public string? FilePath { get; set; }
     public string? ContentType { get; set; }
-    public Dictionary<string, string> Metadata { get; set; } = new();
+    public Dictionary<string, string> Metadata { get; set; } = [];
     public string? ServerSideEncryption { get; set; }
     public string? StorageClass { get; set; }
     public string? SSECustomerAlgorithm { get; set; }
@@ -443,7 +430,6 @@ public class R2DeleteObjectRequest
     public required string BucketName { get; set; }
     public required string Key { get; set; }
     public string? VersionId { get; set; }
-    public bool BypassGovernanceRetention { get; set; }
     public string? ExpectedBucketOwner { get; set; }
 }
 ```
@@ -459,7 +445,7 @@ public class R2CopyObjectRequest
     public string? SourceVersionId { get; set; }
     public string? MetadataDirective { get; set; }
     public string? ContentType { get; set; }
-    public Dictionary<string, string> Metadata { get; set; } = new();
+    public Dictionary<string, string> Metadata { get; set; } = [];
     public string? ServerSideEncryption { get; set; }
     public string? StorageClass { get; set; }
 }
@@ -476,9 +462,9 @@ public class R2ListObjectsResponse
     public string? Prefix { get; set; }
     public string? Delimiter { get; set; }
     public int? MaxKeys { get; set; }
-    public bool IsTruncated { get; set; }
+    public bool? IsTruncated { get; set; }
     public string? NextContinuationToken { get; set; }
-    public int KeyCount { get; set; }
+    public int? KeyCount { get; set; }
     public List<string> CommonPrefixes { get; set; } = [];
 }
 ```
@@ -488,8 +474,8 @@ public class R2ListObjectsResponse
 public class R2ObjectInfoResponse
 {
     public required string Key { get; set; }
-    public long Size { get; set; }
-    public DateTime LastModified { get; set; }
+    public long? Size { get; set; }
+    public DateTime? LastModified { get; set; }
     public string? ETag { get; set; }
     public string? StorageClass { get; set; }
     public string? Owner { get; set; }
@@ -502,14 +488,14 @@ public class R2GetObjectResponse : IDisposable
 {
     public required string BucketName { get; set; }
     public required string Key { get; set; }
-    public byte[] ContentBytes { get; set; } = [];
+    public byte[]? ContentBytes { get; set; }
     public Stream? ContentStream { get; set; }
     public string? ContentType { get; set; }
     public long ContentLength { get; set; }
     public string? ETag { get; set; }
-    public DateTime LastModified { get; set; }
+    public DateTime? LastModified { get; set; }
     public string? VersionId { get; set; }
-    public Dictionary<string, string> Metadata { get; set; } = new();
+    public Dictionary<string, string> Metadata { get; set; } = [];
     public string? CacheControl { get; set; }
     public string? ContentDisposition { get; set; }
     public string? ContentEncoding { get; set; }

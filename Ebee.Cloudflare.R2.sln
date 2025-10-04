@@ -27,6 +27,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{208BA388-4
 		docs\signedurls.md = docs\signedurls.md
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ebee.Cloudflare.R2.SignedUrls", "Ebee.Cloudflare.R2.SignedUrls\Ebee.Cloudflare.R2.SignedUrls.csproj", "{5E9D072D-B672-4DC9-829C-DA82E43DFD9C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -85,6 +87,18 @@ Global
 		{159F307F-7242-4E27-8B7F-D5D33BB37A9D}.Release|x64.Build.0 = Release|Any CPU
 		{159F307F-7242-4E27-8B7F-D5D33BB37A9D}.Release|x86.ActiveCfg = Release|Any CPU
 		{159F307F-7242-4E27-8B7F-D5D33BB37A9D}.Release|x86.Build.0 = Release|Any CPU
+		{5E9D072D-B672-4DC9-829C-DA82E43DFD9C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5E9D072D-B672-4DC9-829C-DA82E43DFD9C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5E9D072D-B672-4DC9-829C-DA82E43DFD9C}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{5E9D072D-B672-4DC9-829C-DA82E43DFD9C}.Debug|x64.Build.0 = Debug|Any CPU
+		{5E9D072D-B672-4DC9-829C-DA82E43DFD9C}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{5E9D072D-B672-4DC9-829C-DA82E43DFD9C}.Debug|x86.Build.0 = Debug|Any CPU
+		{5E9D072D-B672-4DC9-829C-DA82E43DFD9C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5E9D072D-B672-4DC9-829C-DA82E43DFD9C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5E9D072D-B672-4DC9-829C-DA82E43DFD9C}.Release|x64.ActiveCfg = Release|Any CPU
+		{5E9D072D-B672-4DC9-829C-DA82E43DFD9C}.Release|x64.Build.0 = Release|Any CPU
+		{5E9D072D-B672-4DC9-829C-DA82E43DFD9C}.Release|x86.ActiveCfg = Release|Any CPU
+		{5E9D072D-B672-4DC9-829C-DA82E43DFD9C}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -94,6 +108,7 @@ Global
 		{8419C85A-55C4-4DA7-B5E1-8F2D115D8053} = {0AB3BF05-4346-4AA6-1389-037BE0695223}
 		{44C6B4F0-0352-40BB-BCC0-6DB832BBFE24} = {5D20AA90-6969-D8BD-9DCD-8634F4692FDA}
 		{159F307F-7242-4E27-8B7F-D5D33BB37A9D} = {5D20AA90-6969-D8BD-9DCD-8634F4692FDA}
+		{5E9D072D-B672-4DC9-829C-DA82E43DFD9C} = {5D20AA90-6969-D8BD-9DCD-8634F4692FDA}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {CF04DC23-7751-46B8-B211-2D365DBCE0DB}

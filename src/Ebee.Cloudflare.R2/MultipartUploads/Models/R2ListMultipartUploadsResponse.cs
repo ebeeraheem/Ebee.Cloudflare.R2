@@ -28,12 +28,12 @@ public class R2ListMultipartUploadsResponse
     /// <summary>
     /// Gets or sets the maximum number of uploads returned.
     /// </summary>
-    public int MaxUploads { get; set; }
+    public int? MaxUploads { get; set; }
 
     /// <summary>
     /// Gets or sets whether the result is truncated.
     /// </summary>
-    public bool IsTruncated { get; set; }
+    public bool? IsTruncated { get; set; }
 
     /// <summary>
     /// Gets or sets the next key marker for pagination.

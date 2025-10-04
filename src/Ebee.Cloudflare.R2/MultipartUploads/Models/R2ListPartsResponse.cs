@@ -28,12 +28,12 @@ public class R2ListPartsResponse
     /// <summary>
     /// Gets or sets the maximum number of parts returned.
     /// </summary>
-    public int MaxParts { get; set; }
+    public int? MaxParts { get; set; }
 
     /// <summary>
     /// Gets or sets whether the result is truncated.
     /// </summary>
-    public bool IsTruncated { get; set; }
+    public bool? IsTruncated { get; set; }
 
     /// <summary>
     /// Gets or sets the next part number marker for pagination.

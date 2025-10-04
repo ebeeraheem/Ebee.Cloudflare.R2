@@ -8,7 +8,7 @@ public class R2PartInfoResponse
     /// <summary>
     /// Gets or sets the part number.
     /// </summary>
-    public int PartNumber { get; set; }
+    public int? PartNumber { get; set; }
 
     /// <summary>
     /// Gets or sets the ETag of the part.
@@ -18,10 +18,10 @@ public class R2PartInfoResponse
     /// <summary>
     /// Gets or sets the size of the part in bytes.
     /// </summary>
-    public long Size { get; set; }
+    public long? Size { get; set; }
 
     /// <summary>
     /// Gets or sets when the part was last modified.
     /// </summary>
-    public DateTime LastModified { get; set; }
+    public DateTime? LastModified { get; set; }
 }

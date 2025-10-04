@@ -33,7 +33,7 @@ public class R2GetObjectMetadataResponse
     /// <summary>
     /// Gets or sets the last modified date.
     /// </summary>
-    public DateTime LastModified { get; set; }
+    public DateTime? LastModified { get; set; }
 
     /// <summary>
     /// Gets or sets the version ID.

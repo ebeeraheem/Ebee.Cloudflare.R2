@@ -18,7 +18,7 @@ public class R2MultipartUploadInfoResponse
     /// <summary>
     /// Gets or sets when the multipart upload was initiated.
     /// </summary>
-    public DateTime Initiated { get; set; }
+    public DateTime? Initiated { get; set; }
 
     /// <summary>
     /// Gets or sets the storage class of the object.

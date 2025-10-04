@@ -121,8 +121,6 @@ public static class ServiceCollectionExtensions
             UseHttp = false
         };
 
-        AWSConfigsS3.UseSignatureVersion4 = true;
-
         if (string.IsNullOrEmpty(name))
         {
             services.AddSingleton<IAmazonS3>(_ =>

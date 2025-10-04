@@ -393,10 +393,10 @@ static async Task DeleteObjectAsync(IObjectsClient objectsClient, string bucketN
     }
 }
 
-static string FormatFileSize(long bytes)
+static string FormatFileSize(long? bytes)
 {
     string[] sizes = ["B", "KB", "MB", "GB", "TB"];
-    double len = bytes;
+    double len = bytes ?? 0;
     int order = 0;
     while (len >= 1024 && order < sizes.Length - 1)
     {

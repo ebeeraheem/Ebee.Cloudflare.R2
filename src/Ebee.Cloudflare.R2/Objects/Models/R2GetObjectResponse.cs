@@ -45,7 +45,7 @@ public class R2GetObjectResponse : IDisposable
     /// <summary>
     /// Gets or sets the last modified date.
     /// </summary>
-    public DateTime LastModified { get; set; }
+    public DateTime? LastModified { get; set; }
 
     /// <summary>
     /// Gets or sets the version ID.

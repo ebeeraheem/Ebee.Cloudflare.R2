@@ -13,12 +13,12 @@ public class R2ObjectInfoResponse
     /// <summary>
     /// Gets or sets the size of the object in bytes.
     /// </summary>
-    public long Size { get; set; }
+    public long? Size { get; set; }
 
     /// <summary>
     /// Gets or sets the last modified date of the object.
     /// </summary>
-    public DateTime LastModified { get; set; }
+    public DateTime? LastModified { get; set; }
 
     /// <summary>
     /// Gets or sets the ETag of the object.

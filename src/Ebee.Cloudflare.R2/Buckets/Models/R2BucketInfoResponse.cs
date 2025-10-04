@@ -13,5 +13,5 @@ public class R2BucketInfoResponse
     /// <summary>
     /// Gets or sets the bucket creation date.
     /// </summary>
-    public DateTime CreationDate { get; set; }
+    public DateTime? CreationDate { get; set; }
 }

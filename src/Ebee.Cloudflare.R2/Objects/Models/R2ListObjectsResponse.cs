@@ -28,12 +28,12 @@ public class R2ListObjectsResponse
     /// <summary>
     /// Gets or sets the maximum number of keys returned.
     /// </summary>
-    public int MaxKeys { get; set; }
+    public int? MaxKeys { get; set; }
 
     /// <summary>
     /// Gets or sets whether the result is truncated.
     /// </summary>
-    public bool IsTruncated { get; set; }
+    public bool? IsTruncated { get; set; }
 
     /// <summary>
     /// Gets or sets the continuation token for next page.
@@ -43,7 +43,7 @@ public class R2ListObjectsResponse
     /// <summary>
     /// Gets or sets the key count.
     /// </summary>
-    public int KeyCount { get; set; }
+    public int? KeyCount { get; set; }
 
     /// <summary>
     /// Gets or sets the common prefixes for grouped results.

@@ -57,7 +57,7 @@ public class MultipartUploadsClient(IAmazonS3 s3Client) : IMultipartUploadsClien
                 initiateRequest.Headers.ContentEncoding = request.ContentEncoding;
 
             if (request.Expires.HasValue)
-                initiateRequest.Headers.ExpiresUtc = request.Expires.Value;
+                initiateRequest.Headers.Expires = request.Expires.Value;
 
             // Set server-side encryption with customer-provided keys
             if (!string.IsNullOrEmpty(request.SSECustomerAlgorithm))
@@ -406,7 +406,7 @@ public class MultipartUploadsClient(IAmazonS3 s3Client) : IMultipartUploadsClien
                 IsTruncated = response.IsTruncated,
                 NextKeyMarker = response.NextKeyMarker,
                 NextUploadIdMarker = response.NextUploadIdMarker,
-                CommonPrefixes = [.. response.CommonPrefixes]
+                CommonPrefixes = response.CommonPrefixes,
             };
         }
         catch (AmazonS3Exception ex) when (ex.ErrorCode == "NoSuchBucket")

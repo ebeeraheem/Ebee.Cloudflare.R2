@@ -39,11 +39,12 @@ public class ObjectsClient(IAmazonS3 s3Client) : IObjectsClient
             };
 
             var response = await _s3Client.ListObjectsV2Async(listRequest, cancellationToken);
+            var s3Objects = response.S3Objects ?? [];
 
             return new R2ListObjectsResponse
             {
                 BucketName = request.BucketName,
-                Objects = [.. response.S3Objects
+                Objects = [.. s3Objects
                     .Select(obj => new R2ObjectInfoResponse
                     {
                         Key = obj.Key,
@@ -59,7 +60,7 @@ public class ObjectsClient(IAmazonS3 s3Client) : IObjectsClient
                 IsTruncated = response.IsTruncated,
                 NextContinuationToken = response.NextContinuationToken,
                 KeyCount = response.KeyCount,
-                CommonPrefixes = [.. response.CommonPrefixes]
+                CommonPrefixes = response.CommonPrefixes
             };
         }
         catch (AmazonS3Exception ex) when (ex.ErrorCode == "NoSuchBucket")
@@ -104,10 +105,10 @@ public class ObjectsClient(IAmazonS3 s3Client) : IObjectsClient
                 getRequest.EtagToNotMatch = request.IfNoneMatch;
 
             if (request.IfModifiedSince.HasValue)
-                getRequest.ModifiedSinceDateUtc = request.IfModifiedSince.Value;
+                getRequest.ModifiedSinceDate = request.IfModifiedSince.Value;
 
             if (request.IfUnmodifiedSince.HasValue)
-                getRequest.UnmodifiedSinceDateUtc = request.IfUnmodifiedSince.Value;
+                getRequest.UnmodifiedSinceDate = request.IfUnmodifiedSince.Value;
 
             var response = await _s3Client.GetObjectAsync(getRequest, cancellationToken);
 
@@ -326,10 +327,10 @@ public class ObjectsClient(IAmazonS3 s3Client) : IObjectsClient
                 metadataRequest.EtagToNotMatch = request.IfNoneMatch;
 
             if (request.IfModifiedSince.HasValue)
-                metadataRequest.ModifiedSinceDateUtc = request.IfModifiedSince.Value;
+                metadataRequest.ModifiedSinceDate = request.IfModifiedSince.Value;
 
             if (request.IfUnmodifiedSince.HasValue)
-                metadataRequest.UnmodifiedSinceDateUtc = request.IfUnmodifiedSince.Value;
+                metadataRequest.UnmodifiedSinceDate = request.IfUnmodifiedSince.Value;
 
             var response = await _s3Client.GetObjectMetadataAsync(metadataRequest, cancellationToken);
 

@@ -1151,7 +1151,7 @@ public class MultipartUploadsClientTests
             Parts = expectedParts,
             MaxParts = 1000,
             IsTruncated = false,
-            NextPartNumberMarker = default,
+            NextPartNumberMarker = null,
             StorageClass = "STANDARD",
             Owner = new Owner { DisplayName = "test-owner" }
         };
@@ -1172,7 +1172,7 @@ public class MultipartUploadsClientTests
         result.Parts.Should().HaveCount(2);
         result.MaxParts.Should().Be(1000);
         result.IsTruncated.Should().BeFalse();
-        result.NextPartNumberMarker.Should().Be(default);
+        result.NextPartNumberMarker.Should().Be(null);
         result.StorageClass.Should().Be("STANDARD");
         result.Owner.Should().Be("test-owner");
 

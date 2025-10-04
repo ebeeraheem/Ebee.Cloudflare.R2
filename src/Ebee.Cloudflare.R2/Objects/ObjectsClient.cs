@@ -5,7 +5,6 @@ using System.Globalization;
 
 namespace Ebee.Cloudflare.R2.Objects;
 
-
 /// <summary>
 /// Client for R2 object operations.
 /// </summary>
@@ -188,6 +187,8 @@ public class ObjectsClient(IAmazonS3 s3Client) : IObjectsClient
                 BucketName = request.BucketName,
                 Key = request.Key,
                 ContentType = request.ContentType,
+                DisablePayloadSigning = true,
+                DisableDefaultChecksumValidation = true,
                 ServerSideEncryptionMethod = !string.IsNullOrEmpty(request.ServerSideEncryption)
                     ? ServerSideEncryptionMethod.FindValue(request.ServerSideEncryption)
                     : null,
@@ -266,7 +267,6 @@ public class ObjectsClient(IAmazonS3 s3Client) : IObjectsClient
                 BucketName = request.BucketName,
                 Key = request.Key,
                 VersionId = request.VersionId,
-                BypassGovernanceRetention = request.BypassGovernanceRetention
             };
 
             if (!string.IsNullOrEmpty(request.ExpectedBucketOwner))
@@ -399,7 +399,7 @@ public class ObjectsClient(IAmazonS3 s3Client) : IObjectsClient
                     ? S3StorageClass.FindValue(request.StorageClass)
                     : null
             };
-
+            
             // Add metadata
             foreach (var metadata in request.Metadata)
             {

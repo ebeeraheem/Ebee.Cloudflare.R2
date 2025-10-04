@@ -512,8 +512,6 @@ public class SignedUrlsClientTests
         {
             BucketName = "test-bucket",
             Key = "test-object.txt",
-            BypassGovernanceRetention = true,
-            ExpectedBucketOwner = "expected-owner"
         };
 
         var expectedSignedUrl = "https://test-bucket.r2.cloudflarestorage.com/test-object.txt?signed-params";

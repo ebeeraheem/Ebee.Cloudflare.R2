@@ -1,4 +1,6 @@
 ﻿using Ebee.Cloudflare.R2;
+using Ebee.Cloudflare.R2.Buckets;
+using Ebee.Cloudflare.R2.Buckets.Models;
 using Ebee.Cloudflare.R2.Objects;
 using Ebee.Cloudflare.R2.Objects.Models;
 using Microsoft.Extensions.DependencyInjection;
@@ -36,52 +38,121 @@ var host = Host.CreateDefaultBuilder(args)
     })
     .Build();
 
-// Get the objects client from DI container
+// Get clients from DI container
+var bucketsClient = host.Services.GetRequiredService<IBucketsClient>();
 var objectsClient = host.Services.GetRequiredService<IObjectsClient>();
 
 try
 {
-    // 1. List objects in the bucket (should be empty initially)
+    // 1. Create test bucket (required for object operations)
+    await CreateBucketAsync(bucketsClient, TEST_BUCKET_NAME);
+
+    // 2. List objects in the bucket (should be empty initially)
     await ListObjectsAsync(objectsClient, TEST_BUCKET_NAME);
 
-    // 2. Put a test object
+    // 3. Put a test object
     await PutObjectAsync(objectsClient, TEST_BUCKET_NAME, TEST_OBJECT_KEY, TEST_CONTENT);
 
-    // 3. List objects again to show the new object
+    // 4. List objects again to show the new object
     await ListObjectsAsync(objectsClient, TEST_BUCKET_NAME);
 
-    // 4. Get object metadata
+    // 5. Get object metadata
     await GetObjectMetadataAsync(objectsClient, TEST_BUCKET_NAME, TEST_OBJECT_KEY);
 
-    // 5. Get the object content
+    // 6. Get the object content
     await GetObjectAsync(objectsClient, TEST_BUCKET_NAME, TEST_OBJECT_KEY);
 
-    // 6. Copy the object to a new key
+    // 7. Copy the object to a new key
     await CopyObjectAsync(objectsClient, TEST_BUCKET_NAME, TEST_OBJECT_KEY, TEST_BUCKET_NAME, TEST_OBJECT_KEY_2);
 
-    // 7. List objects to show both files
+    // 8. List objects to show both files
     await ListObjectsAsync(objectsClient, TEST_BUCKET_NAME);
 
-    // 8. Delete the original object
+    // 9. Delete the original object
     await DeleteObjectAsync(objectsClient, TEST_BUCKET_NAME, TEST_OBJECT_KEY);
 
-    // 9. Delete the copied object
+    // 10. Delete the copied object
     await DeleteObjectAsync(objectsClient, TEST_BUCKET_NAME, TEST_OBJECT_KEY_2);
 
-    // 10. List objects again to confirm deletion
+    // 11. List objects again to confirm deletion
     await ListObjectsAsync(objectsClient, TEST_BUCKET_NAME);
 
-    // 11. Attempt to get a non-existent object (should fail)
+    // 12. Attempt to get a non-existent object (should fail)
     await GetObjectAsync(objectsClient, TEST_BUCKET_NAME, "non-existent-file.txt");
+
+    // 13. Clean up: Delete the test bucket
+    await DeleteBucketAsync(bucketsClient, TEST_BUCKET_NAME);
 }
 catch (Exception ex)
 {
     Console.WriteLine($"Unexpected error: {ex.Message}");
+
+    // Attempt cleanup on error
+    try
+    {
+        Console.WriteLine("Attempting to clean up test bucket...");
+        await DeleteBucketAsync(bucketsClient, TEST_BUCKET_NAME);
+    }
+    catch
+    {
+        Console.WriteLine("Could not clean up test bucket. You may need to delete it manually.");
+    }
 }
 
 Console.WriteLine("\n=== Sample completed ===");
 Console.WriteLine("Press any key to exit...");
 Console.ReadKey();
+
+static async Task CreateBucketAsync(IBucketsClient bucketsClient, string bucketName)
+{
+    Console.WriteLine($"Creating test bucket '{bucketName}'...");
+
+    try
+    {
+        var request = new R2CreateBucketRequest { BucketName = bucketName };
+        var response = await bucketsClient.CreateBucketAsync(request);
+
+        Console.WriteLine($"   Bucket '{response.BucketName}' created successfully!");
+        Console.WriteLine($"   Location: {response.Location}");
+        Console.WriteLine($"   Creation Date: {response.CreationDate:yyyy-MM-dd HH:mm:ss} UTC\n");
+    }
+    catch (R2Exception ex) when (ex.Message.Contains("already exists") || ex.Message.Contains("already owned"))
+    {
+        Console.WriteLine($"   Bucket '{bucketName}' already exists, continuing with sample...\n");
+    }
+    catch (R2Exception ex)
+    {
+        Console.WriteLine($"   Failed to create bucket '{bucketName}': {ex.Message}");
+        if (ex.InnerException is not null)
+        {
+            Console.WriteLine($"   Inner exception: {ex.InnerException.Message}");
+        }
+        Console.WriteLine();
+        throw; // Re-throw to stop execution
+    }
+}
+
+static async Task DeleteBucketAsync(IBucketsClient bucketsClient, string bucketName)
+{
+    Console.WriteLine($"Deleting test bucket '{bucketName}'...");
+
+    try
+    {
+        var request = new R2DeleteBucketRequest { BucketName = bucketName };
+        var response = await bucketsClient.DeleteBucketAsync(request);
+
+        Console.WriteLine($"   Bucket '{response.BucketName}' deleted successfully!\n");
+    }
+    catch (R2Exception ex)
+    {
+        Console.WriteLine($"   Failed to delete bucket '{bucketName}': {ex.Message}");
+        if (ex.InnerException is not null)
+        {
+            Console.WriteLine($"   Inner exception: {ex.InnerException.Message}");
+        }
+        Console.WriteLine();
+    }
+}
 
 static async Task ListObjectsAsync(IObjectsClient objectsClient, string bucketName)
 {

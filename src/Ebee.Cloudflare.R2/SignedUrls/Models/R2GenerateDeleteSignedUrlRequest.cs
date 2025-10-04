@@ -5,13 +5,5 @@
 /// </summary>
 public class R2GenerateDeleteSignedUrlRequest : R2GenerateSignedUrlRequest
 {
-    /// <summary>
-    /// Gets or sets whether to bypass governance mode restrictions.
-    /// </summary>
-    public bool BypassGovernanceRetention { get; set; }
-
-    /// <summary>
-    /// Gets or sets the expected bucket owner.
-    /// </summary>
-    public string? ExpectedBucketOwner { get; set; }
+    // Same as base class; no additional properties needed
 }

@@ -161,12 +161,6 @@ public class SignedUrlsClient(IAmazonS3 s3Client) : ISignedUrlsClient
                 VersionId = request.VersionId
             };
 
-            if (!string.IsNullOrEmpty(request.ExpectedBucketOwner))
-                getPreSignedUrlRequest.Headers["x-amz-expected-bucket-owner"] = request.ExpectedBucketOwner;
-
-            if (request.BypassGovernanceRetention)
-                getPreSignedUrlRequest.Headers["x-amz-bypass-governance-retention"] = "true";
-
             var signedUrl = _s3Client.GetPreSignedURL(getPreSignedUrlRequest);
 
             return new R2SignedUrlResponse

@@ -21,11 +21,6 @@ public class R2DeleteObjectRequest
     public string? VersionId { get; set; }
 
     /// <summary>
-    /// Gets or sets whether to bypass governance mode restrictions.
-    /// </summary>
-    public bool BypassGovernanceRetention { get; set; }
-
-    /// <summary>
     /// Gets or sets the expected bucket owner.
     /// </summary>
     public string? ExpectedBucketOwner { get; set; }

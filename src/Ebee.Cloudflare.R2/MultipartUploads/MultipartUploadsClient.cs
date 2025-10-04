@@ -134,7 +134,9 @@ public class MultipartUploadsClient(IAmazonS3 s3Client) : IMultipartUploadsClien
                 Key = request.Key,
                 UploadId = request.UploadId,
                 PartNumber = request.PartNumber,
-                MD5Digest = request.ContentMD5
+                MD5Digest = request.ContentMD5,
+                DisablePayloadSigning = true,
+                DisableDefaultChecksumValidation = true
             };
 
             // Set content source
@@ -387,11 +389,12 @@ public class MultipartUploadsClient(IAmazonS3 s3Client) : IMultipartUploadsClien
             };
 
             var response = await _s3Client.ListMultipartUploadsAsync(listRequest, cancellationToken);
+            var multipartUploads = response.MultipartUploads ?? [];
 
             return new R2ListMultipartUploadsResponse
             {
                 BucketName = request.BucketName,
-                Uploads = [.. response.MultipartUploads
+                Uploads = [.. multipartUploads
                     .Select(upload => new R2MultipartUploadInfoResponse
                     {
                         Key = upload.Key,

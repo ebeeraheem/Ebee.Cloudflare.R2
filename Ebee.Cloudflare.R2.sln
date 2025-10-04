@@ -29,6 +29,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{208BA388-4
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ebee.Cloudflare.R2.SignedUrls", "Ebee.Cloudflare.R2.SignedUrls\Ebee.Cloudflare.R2.SignedUrls.csproj", "{5E9D072D-B672-4DC9-829C-DA82E43DFD9C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ebee.Cloudflare.R2.MultipartUploads", "samples\Ebee.Cloudflare.R2.MultipartUploads\Ebee.Cloudflare.R2.MultipartUploads.csproj", "{A287C99D-F9A2-4556-B309-C30CA39B5BC8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -99,6 +101,18 @@ Global
 		{5E9D072D-B672-4DC9-829C-DA82E43DFD9C}.Release|x64.Build.0 = Release|Any CPU
 		{5E9D072D-B672-4DC9-829C-DA82E43DFD9C}.Release|x86.ActiveCfg = Release|Any CPU
 		{5E9D072D-B672-4DC9-829C-DA82E43DFD9C}.Release|x86.Build.0 = Release|Any CPU
+		{A287C99D-F9A2-4556-B309-C30CA39B5BC8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A287C99D-F9A2-4556-B309-C30CA39B5BC8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A287C99D-F9A2-4556-B309-C30CA39B5BC8}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{A287C99D-F9A2-4556-B309-C30CA39B5BC8}.Debug|x64.Build.0 = Debug|Any CPU
+		{A287C99D-F9A2-4556-B309-C30CA39B5BC8}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{A287C99D-F9A2-4556-B309-C30CA39B5BC8}.Debug|x86.Build.0 = Debug|Any CPU
+		{A287C99D-F9A2-4556-B309-C30CA39B5BC8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A287C99D-F9A2-4556-B309-C30CA39B5BC8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A287C99D-F9A2-4556-B309-C30CA39B5BC8}.Release|x64.ActiveCfg = Release|Any CPU
+		{A287C99D-F9A2-4556-B309-C30CA39B5BC8}.Release|x64.Build.0 = Release|Any CPU
+		{A287C99D-F9A2-4556-B309-C30CA39B5BC8}.Release|x86.ActiveCfg = Release|Any CPU
+		{A287C99D-F9A2-4556-B309-C30CA39B5BC8}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -109,6 +123,7 @@ Global
 		{44C6B4F0-0352-40BB-BCC0-6DB832BBFE24} = {5D20AA90-6969-D8BD-9DCD-8634F4692FDA}
 		{159F307F-7242-4E27-8B7F-D5D33BB37A9D} = {5D20AA90-6969-D8BD-9DCD-8634F4692FDA}
 		{5E9D072D-B672-4DC9-829C-DA82E43DFD9C} = {5D20AA90-6969-D8BD-9DCD-8634F4692FDA}
+		{A287C99D-F9A2-4556-B309-C30CA39B5BC8} = {5D20AA90-6969-D8BD-9DCD-8634F4692FDA}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {CF04DC23-7751-46B8-B211-2D365DBCE0DB}

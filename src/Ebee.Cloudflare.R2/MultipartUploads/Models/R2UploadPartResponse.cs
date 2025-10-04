@@ -28,7 +28,7 @@ public class R2UploadPartResponse
     /// <summary>
     /// Gets or sets the ETag of the uploaded part.
     /// </summary>
-    public string? ETag { get; set; }
+    public string ETag { get; set; } = string.Empty;
 
     /// <summary>
     /// Gets or sets the server-side encryption method used.

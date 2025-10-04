@@ -12,7 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\src\Ebee.Cloudflare.R2\Ebee.Cloudflare.R2.csproj" />
+    <ProjectReference Include="..\..\src\Ebee.Cloudflare.R2\Ebee.Cloudflare.R2.csproj" />
   </ItemGroup>
 
 </Project>

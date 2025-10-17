@@ -154,4 +154,4 @@ This is the initial release, so no breaking changes apply.
 
 ---
 
-For more details about any release, please check the [GitHub releases page](https://github.com/ebeeraheem/Ebee.Cloudflare.R2/releases).
+For more details about any release, check the [GitHub repository](https://github.com/ebeeraheem/Ebee.Cloudflare.R2).

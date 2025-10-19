@@ -1,10 +1,10 @@
 # Buckets
 
-The `BucketsClient` provides methods for managing R2 buckets, including listing, creating, and deleting buckets.
+The R2 client provides methods for managing R2 buckets, including listing, creating, and deleting buckets.
 
 ## Getting Started
 
-The `BucketsClient` is automatically registered when you configure the R2 client in your dependency injection container:
+The R2 client is automatically registered when you configure it in your dependency injection container:
 
 ```csharp
 services.AddR2Client(options =>
@@ -15,7 +15,7 @@ services.AddR2Client(options =>
 });
 ```
 
-Then inject `IR2Client` and access the buckets client:
+Then inject `IR2Client` and use the bucket methods directly:
 
 ```csharp
 public class MyService
@@ -29,8 +29,9 @@ public class MyService
 
     public async Task ManageBuckets()
     {
-        var bucketsClient = _r2Client.Buckets;
-        // Use buckets client methods...
+        // Use bucket methods directly on the client
+        var response = await _r2Client.ListBucketsAsync();
+        // ...
     }
 }
 ```
@@ -40,7 +41,7 @@ public class MyService
 Retrieve a list of all buckets in your R2 account:
 
 ```csharp
-var response = await _r2Client.Buckets.ListBucketsAsync();
+var response = await _r2Client.ListBucketsAsync();
 
 Console.WriteLine($"Owner: {response.Owner}");
 foreach (var bucket in response.Buckets)
@@ -66,7 +67,7 @@ var request = new R2CreateBucketRequest
     BucketName = "my-new-bucket"
 };
 
-var response = await _r2Client.Buckets.CreateBucketAsync(request);
+var response = await _r2Client.CreateBucketAsync(request);
 
 Console.WriteLine($"Created bucket: {response.BucketName}");
 Console.WriteLine($"Location: {response.Location}");
@@ -93,7 +94,7 @@ The create operation may throw `R2Exception` with specific error messages:
 ```csharp
 try
 {
-    var response = await _r2Client.Buckets.CreateBucketAsync(request);
+    var response = await _r2Client.CreateBucketAsync(request);
     Console.WriteLine($"Bucket created successfully: {response.BucketName}");
 }
 catch (R2Exception ex)
@@ -112,7 +113,7 @@ var request = new R2DeleteBucketRequest
     BucketName = "bucket-to-delete"
 };
 
-var response = await _r2Client.Buckets.DeleteBucketAsync(request);
+var response = await _r2Client.DeleteBucketAsync(request);
 Console.WriteLine($"Deleted bucket: {response.BucketName}");
 ```
 
@@ -132,7 +133,7 @@ The delete operation may throw `R2Exception` with specific error messages:
 ```csharp
 try
 {
-    var response = await _r2Client.Buckets.DeleteBucketAsync(request);
+    var response = await _r2Client.DeleteBucketAsync(request);
     Console.WriteLine($"Bucket deleted successfully: {response.BucketName}");
 }
 catch (R2Exception ex)
@@ -143,10 +144,10 @@ catch (R2Exception ex)
 
 ## API Reference
 
-### IBucketsClient Interface
+### IR2Client Interface (Bucket Methods)
 
 ```csharp
-public interface IBucketsClient
+public interface IR2Client
 {
     Task<R2ListBucketsResponse> ListBucketsAsync(CancellationToken cancellationToken = default);
     Task<R2CreateBucketResponse> CreateBucketAsync(R2CreateBucketRequest request, CancellationToken cancellationToken = default);
@@ -236,7 +237,7 @@ public class BucketManager
         try
         {
             var createRequest = new R2CreateBucketRequest { BucketName = bucketName };
-            var response = await _r2Client.Buckets.CreateBucketAsync(createRequest);
+            var response = await _r2Client.CreateBucketAsync(createRequest);
             
             _logger.LogInformation("Created bucket {BucketName} at {CreationDate}", 
                 response.BucketName, response.CreationDate);
@@ -259,7 +260,7 @@ public class BucketManager
     {
         try
         {
-            var response = await _r2Client.Buckets.ListBucketsAsync();
+            var response = await _r2Client.ListBucketsAsync();
             return response.Buckets.Select(b => b.Name).ToList();
         }
         catch (R2Exception ex)

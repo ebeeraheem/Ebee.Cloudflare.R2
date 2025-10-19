@@ -1,10 +1,10 @@
 # Objects
 
-The `ObjectsClient` provides methods for managing R2 objects, including listing, uploading, downloading, copying, deleting objects, and retrieving object metadata.
+The R2 client provides methods for managing R2 objects, including listing, uploading, downloading, copying, deleting objects, and retrieving object metadata.
 
 ## Getting Started
 
-The `ObjectsClient` is automatically registered when you configure the R2 client in your dependency injection container:
+The R2 client is automatically registered when you configure it in your dependency injection container:
 
 ```csharp
 services.AddR2Client(options =>
@@ -15,7 +15,7 @@ services.AddR2Client(options =>
 });
 ```
 
-Then inject `IR2Client` and access the objects client:
+Then inject `IR2Client` and use the object methods directly:
 
 ```csharp
 public class MyService
@@ -29,8 +29,9 @@ public class MyService
 
     public async Task ManageObjects()
     {
-        var objectsClient = _r2Client.Objects;
-        // Use objects client methods...
+        // Use object methods directly on the client
+        var response = await _r2Client.ListObjectsAsync(request);
+        // ...
     }
 }
 ```
@@ -51,7 +52,7 @@ var request = new R2ListObjectsRequest
     StartAfter = "documents/file1"   // Optional: start listing after this key
 };
 
-var response = await _r2Client.Objects.ListObjectsAsync(request);
+var response = await _r2Client.ListObjectsAsync(request);
 
 Console.WriteLine($"Found {response.KeyCount} objects in bucket {response.BucketName}");
 foreach (var obj in response.Objects)
@@ -63,7 +64,7 @@ foreach (var obj in response.Objects)
 if (response.IsTruncated)
 {
     var nextRequest = request with { ContinuationToken = response.NextContinuationToken };
-    var nextPage = await _r2Client.Objects.ListObjectsAsync(nextRequest);
+    var nextPage = await _r2Client.ListObjectsAsync(nextRequest);
 }
 ```
 
@@ -98,7 +99,7 @@ var request = new R2PutObjectRequest
     }
 };
 
-var response = await _r2Client.Objects.PutObjectAsync(request);
+var response = await _r2Client.PutObjectAsync(request);
 Console.WriteLine($"Uploaded {response.Key} with ETag: {response.ETag}");
 ```
 
@@ -116,7 +117,7 @@ var request = new R2PutObjectRequest
     StorageClass = "STANDARD"
 };
 
-var response = await _r2Client.Objects.PutObjectAsync(request);
+var response = await _r2Client.PutObjectAsync(request);
 ```
 
 ### Upload from File Path
@@ -130,7 +131,7 @@ var request = new R2PutObjectRequest
     ContentType = "image/jpeg"
 };
 
-var response = await _r2Client.Objects.PutObjectAsync(request);
+var response = await _r2Client.PutObjectAsync(request);
 ```
 
 ### Server-Side Encryption with Customer Keys
@@ -146,7 +147,7 @@ var request = new R2PutObjectRequest
     SSECustomerKeyMD5 = "md5-hash-of-key"
 };
 
-var response = await _r2Client.Objects.PutObjectAsync(request);
+var response = await _r2Client.PutObjectAsync(request);
 ```
 
 ## Downloading Objects
@@ -162,7 +163,7 @@ var request = new R2GetObjectRequest
     Key = "document.pdf"
 };
 
-using var response = await _r2Client.Objects.GetObjectAsync(request);
+using var response = await _r2Client.GetObjectAsync(request);
 
 // Access content as byte array
 byte[] content = response.ContentBytes;
@@ -189,7 +190,7 @@ var request = new R2GetObjectRequest
     IfUnmodifiedSince = DateTime.UtcNow.AddDays(-1)  // Download only if not modified since date
 };
 
-using var response = await _r2Client.Objects.GetObjectAsync(request);
+using var response = await _r2Client.GetObjectAsync(request);
 ```
 
 ### Range Downloads (Partial Content)
@@ -202,13 +203,13 @@ var request = new R2GetObjectRequest
     Range = "bytes=0-1023"  // Download first 1024 bytes
 };
 
-using var response = await _r2Client.Objects.GetObjectAsync(request);
+using var response = await _r2Client.GetObjectAsync(request);
 ```
 
 ### Working with Metadata
 
 ```csharp
-using var response = await _r2Client.Objects.GetObjectAsync(request);
+using var response = await _r2Client.GetObjectAsync(request);
 
 // Access standard metadata
 Console.WriteLine($"Content-Type: {response.ContentType}");
@@ -235,7 +236,7 @@ var request = new R2GetObjectMetadataRequest
     VersionId = "specific-version-id"  // Optional: get metadata for specific version
 };
 
-var response = await _r2Client.Objects.GetObjectMetadataAsync(request);
+var response = await _r2Client.GetObjectMetadataAsync(request);
 
 Console.WriteLine($"Object: {response.Key}");
 Console.WriteLine($"Size: {response.ContentLength} bytes");
@@ -259,7 +260,7 @@ var request = new R2CopyObjectRequest
     DestinationKey = "copied-file.txt"
 };
 
-var response = await _r2Client.Objects.CopyObjectAsync(request);
+var response = await _r2Client.CopyObjectAsync(request);
 Console.WriteLine($"Copied to {response.DestinationKey} with ETag: {response.ETag}");
 ```
 
@@ -281,7 +282,7 @@ var request = new R2CopyObjectRequest
     }
 };
 
-var response = await _r2Client.Objects.CopyObjectAsync(request);
+var response = await _r2Client.CopyObjectAsync(request);
 ```
 
 ### Copy Specific Version
@@ -296,7 +297,7 @@ var request = new R2CopyObjectRequest
     DestinationKey = "document-backup.txt"
 };
 
-var response = await _r2Client.Objects.CopyObjectAsync(request);
+var response = await _r2Client.CopyObjectAsync(request);
 ```
 
 ## Deleting Objects
@@ -312,7 +313,7 @@ var request = new R2DeleteObjectRequest
     Key = "obsolete-file.txt"
 };
 
-var response = await _r2Client.Objects.DeleteObjectAsync(request);
+var response = await _r2Client.DeleteObjectAsync(request);
 Console.WriteLine($"Deleted {response.Key} at {response.DeletedAt}");
 ```
 
@@ -326,7 +327,7 @@ var request = new R2DeleteObjectRequest
     VersionId = "specific-version-id"
 };
 
-var response = await _r2Client.Objects.DeleteObjectAsync(request);
+var response = await _r2Client.DeleteObjectAsync(request);
 ```
 
 ## Error Handling
@@ -336,7 +337,7 @@ All object operations may throw `R2Exception` with specific error scenarios:
 ```csharp
 try
 {
-    var response = await _r2Client.Objects.GetObjectAsync(request);
+    var response = await _r2Client.GetObjectAsync(request);
     // Process successful response
 }
 catch (R2Exception ex)
@@ -359,10 +360,10 @@ Common error scenarios:
 
 ## API Reference
 
-### IObjectsClient Interface
+### IR2Client Interface (Object Methods)
 
 ```csharp
-public interface IObjectsClient
+public interface IR2Client
 {
     Task<R2ListObjectsResponse> ListObjectsAsync(R2ListObjectsRequest request, CancellationToken cancellationToken = default);
     Task<R2GetObjectResponse> GetObjectAsync(R2GetObjectRequest request, CancellationToken cancellationToken = default);
@@ -544,7 +545,7 @@ public class ObjectManager
                 }
             };
 
-            var response = await _r2Client.Objects.PutObjectAsync(request);
+            var response = await _r2Client.PutObjectAsync(request);
             _logger.LogInformation("Uploaded object {Key} to bucket {BucketName} with ETag {ETag}",
                 response.Key, response.BucketName, response.ETag);
             
@@ -567,7 +568,7 @@ public class ObjectManager
                 Key = key
             };
 
-            var response = await _r2Client.Objects.GetObjectAsync(request);
+            var response = await _r2Client.GetObjectAsync(request);
             _logger.LogInformation("Downloaded object {Key} from bucket {BucketName} ({ContentLength} bytes)",
                 response.Key, response.BucketName, response.ContentLength);
             
@@ -597,7 +598,7 @@ public class ObjectManager
                     ContinuationToken = continuationToken
                 };
 
-                var response = await _r2Client.Objects.ListObjectsAsync(request);
+                var response = await _r2Client.ListObjectsAsync(request);
                 allKeys.AddRange(response.Objects.Select(obj => obj.Key));
                 
                 continuationToken = response.NextContinuationToken;

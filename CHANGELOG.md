@@ -5,6 +5,23 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.0] - 2025-10-19
+### Added
+- **Flattened API**: All operations directly on `R2Client`
+  - `r2Client.ListBucketsAsync()` (no more `.Buckets.`)
+  - `r2Client.GetObjectAsync(request)`
+  - `r2Client.ListObjectsAsync(request)`
+
+### Changed
+- **AWS S3 alignment**: Bucket name as first parameter (matches `AmazonS3Client`)
+- **Zero boilerplate**: No request objects needed for 95% operations
+
+### Migration Guide
+| Old (1.0.x) | New (1.1.0) |
+|-------------|-------------|
+| `r2Client.Buckets.ListBucketsAsync()` | `r2Client.ListBucketsAsync()` |
+| `r2Client.Objects.GetObjectAsync(request)` | `r2Client.GetObjectAsync(request)` |
+
 ## [1.0.1] - 2025-10-05
 ### Added
 - **NuGet package icon** for better discoverability
@@ -13,16 +30,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - Initial implementation of comprehensive Cloudflare R2 client library
-
-### Changed
-
-### Deprecated
-
-### Removed
-
-### Fixed
-
-### Security
 
 ## [1.0.0] - 2025-10-04
 

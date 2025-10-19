@@ -1,5 +1,4 @@
-﻿using Amazon;
-using Amazon.S3;
+﻿using Amazon.S3;
 using Ebee.Cloudflare.R2.Buckets;
 using Ebee.Cloudflare.R2.MultipartUploads;
 using Ebee.Cloudflare.R2.Objects;

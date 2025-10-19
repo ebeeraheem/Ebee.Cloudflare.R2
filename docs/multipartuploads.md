@@ -1,10 +1,10 @@
 # Multipart Uploads
 
-The `MultipartUploadsClient` provides methods for managing R2 multipart uploads, enabling efficient uploading of large objects by breaking them into smaller parts that can be uploaded independently and in parallel.
+The R2 client provides methods for managing R2 multipart uploads, enabling efficient uploading of large objects by breaking them into smaller parts that can be uploaded independently and in parallel.
 
 ## Getting Started
 
-The `MultipartUploadsClient` is automatically registered when you configure the R2 client in your dependency injection container:
+The R2 client is automatically registered when you configure it in your dependency injection container:
 
 ```csharp
 services.AddR2Client(options =>
@@ -15,7 +15,7 @@ services.AddR2Client(options =>
 });
 ```
 
-Then inject `IR2Client` and access the multipart uploads client:
+Then inject `IR2Client` and use the multipart upload methods directly:
 
 ```csharp
 public class MyService
@@ -29,8 +29,9 @@ public class MyService
 
     public async Task ManageMultipartUploads()
     {
-        var multipartClient = _r2Client.MultipartUploads;
-        // Use multipart uploads client methods...
+        // Use multipart upload methods directly on the client
+        var response = await _r2Client.InitiateMultipartUploadAsync(request);
+        // ...
     }
 }
 ```
@@ -69,7 +70,7 @@ var request = new R2InitiateMultipartUploadRequest
     }
 };
 
-var response = await _r2Client.MultipartUploads.InitiateMultipartUploadAsync(request);
+var response = await _r2Client.InitiateMultipartUploadAsync(request);
 
 Console.WriteLine($"Initiated upload with ID: {response.UploadId}");
 Console.WriteLine($"Upload started at: {response.InitiatedAt}");
@@ -105,7 +106,7 @@ var request = new R2InitiateMultipartUploadRequest
     }
 };
 
-var response = await _r2Client.MultipartUploads.InitiateMultipartUploadAsync(request);
+var response = await _r2Client.InitiateMultipartUploadAsync(request);
 ```
 
 ## Uploading Parts
@@ -127,7 +128,7 @@ var request = new R2UploadPartRequest
     ContentMD5 = "md5-hash-of-part-content"  // Optional but recommended
 };
 
-var response = await _r2Client.MultipartUploads.UploadPartAsync(request);
+var response = await _r2Client.UploadPartAsync(request);
 
 Console.WriteLine($"Uploaded part {response.PartNumber} with ETag: {response.ETag}");
 
@@ -149,7 +150,7 @@ var request = new R2UploadPartRequest
     ContentStream = partStream
 };
 
-var response = await _r2Client.MultipartUploads.UploadPartAsync(request);
+var response = await _r2Client.UploadPartAsync(request);
 ```
 
 ### Upload Part from File Path
@@ -164,7 +165,7 @@ var request = new R2UploadPartRequest
     FilePath = @"C:\temp\part3.bin"
 };
 
-var response = await _r2Client.MultipartUploads.UploadPartAsync(request);
+var response = await _r2Client.UploadPartAsync(request);
 ```
 
 ### Upload Part with Customer Encryption
@@ -182,7 +183,7 @@ var request = new R2UploadPartRequest
     SSECustomerKeyMD5 = "md5-hash-of-the-key"
 };
 
-var response = await _r2Client.MultipartUploads.UploadPartAsync(request);
+var response = await _r2Client.UploadPartAsync(request);
 ```
 
 ### Parallel Part Uploads
@@ -203,7 +204,7 @@ for (int partNumber = 1; partNumber <= totalParts; partNumber++)
         ContentBytes = partData
     };
     
-    uploadTasks.Add(_r2Client.MultipartUploads.UploadPartAsync(request));
+    uploadTasks.Add(_r2Client.UploadPartAsync(request));
 }
 
 var responses = await Task.WhenAll(uploadTasks);
@@ -239,7 +240,7 @@ var request = new R2CompleteMultipartUploadRequest
     Parts = completedParts
 };
 
-var response = await _r2Client.MultipartUploads.CompleteMultipartUploadAsync(request);
+var response = await _r2Client.CompleteMultipartUploadAsync(request);
 
 Console.WriteLine($"Upload completed successfully!");
 Console.WriteLine($"Final object ETag: {response.ETag}");
@@ -269,7 +270,7 @@ var request = new R2AbortMultipartUploadRequest
     UploadId = uploadId
 };
 
-var response = await _r2Client.MultipartUploads.AbortMultipartUploadAsync(request);
+var response = await _r2Client.AbortMultipartUploadAsync(request);
 
 Console.WriteLine($"Aborted upload {response.UploadId} for {response.Key}");
 Console.WriteLine($"Aborted at: {response.AbortedAt}");
@@ -296,7 +297,7 @@ var request = new R2ListPartsRequest
     PartNumberMarker = 50              // Optional: start after part number
 };
 
-var response = await _r2Client.MultipartUploads.ListPartsAsync(request);
+var response = await _r2Client.ListPartsAsync(request);
 
 Console.WriteLine($"Upload has {response.Parts.Count} parts uploaded");
 Console.WriteLine($"Storage class: {response.StorageClass}");
@@ -312,7 +313,7 @@ foreach (var part in response.Parts)
 if (response.IsTruncated)
 {
     var nextRequest = request with { PartNumberMarker = response.NextPartNumberMarker };
-    var nextPage = await _r2Client.MultipartUploads.ListPartsAsync(nextRequest);
+    var nextPage = await _r2Client.ListPartsAsync(nextRequest);
 }
 ```
 
@@ -331,7 +332,7 @@ var request = new R2ListMultipartUploadsRequest
     UploadIdMarker = "last-upload-id-from-previous-page" // Optional: pagination
 };
 
-var response = await _r2Client.MultipartUploads.ListMultipartUploadsAsync(request);
+var response = await _r2Client.ListMultipartUploadsAsync(request);
 
 Console.WriteLine($"Found {response.Uploads.Count} ongoing uploads in bucket {response.BucketName}");
 
@@ -353,7 +354,7 @@ if (response.IsTruncated)
         KeyMarker = response.NextKeyMarker, 
         UploadIdMarker = response.NextUploadIdMarker 
     };
-    var nextPage = await _r2Client.MultipartUploads.ListMultipartUploadsAsync(nextRequest);
+    var nextPage = await _r2Client.ListMultipartUploadsAsync(nextRequest);
 }
 ```
 
@@ -364,7 +365,7 @@ All multipart upload operations may throw `R2Exception` with specific error scen
 ```csharp
 try
 {
-    var response = await _r2Client.MultipartUploads.UploadPartAsync(request);
+    var response = await _r2Client.UploadPartAsync(request);
     // Process successful response
 }
 catch (R2Exception ex)
@@ -388,10 +389,10 @@ Common error scenarios:
 
 ## API Reference
 
-### IMultipartUploadsClient Interface
+### IR2Client Interface (Multipart Upload Methods)
 
 ```csharp
-public interface IMultipartUploadsClient
+public interface IR2Client
 {
     Task<R2InitiateMultipartUploadResponse> InitiateMultipartUploadAsync(
         R2InitiateMultipartUploadRequest request, 
@@ -678,8 +679,7 @@ public class MultipartUploadManager
                 }
             };
 
-            var initiateResponse = await _r2Client.MultipartUploads
-                .InitiateMultipartUploadAsync(initiateRequest, cancellationToken);
+            var initiateResponse = await _r2Client.InitiateMultipartUploadAsync(initiateRequest, cancellationToken);
             
             uploadId = initiateResponse.UploadId;
             _logger.LogInformation("Initiated multipart upload {UploadId} for {Key}", uploadId, key);
@@ -703,8 +703,7 @@ public class MultipartUploadManager
                         ContentBytes = part
                     };
 
-                    var partResponse = await _r2Client.MultipartUploads
-                        .UploadPartAsync(partRequest, cancellationToken);
+                    var partResponse = await _r2Client.UploadPartAsync(partRequest, cancellationToken);
                     
                     _logger.LogDebug("Uploaded part {PartNumber} with ETag {ETag}", 
                         partResponse.PartNumber, partResponse.ETag);
@@ -733,8 +732,7 @@ public class MultipartUploadManager
                 Parts = completedParts
             };
 
-            var completeResponse = await _r2Client.MultipartUploads
-                .CompleteMultipartUploadAsync(completeRequest, cancellationToken);
+            var completeResponse = await _r2Client.CompleteMultipartUploadAsync(completeRequest, cancellationToken);
 
             _logger.LogInformation("Completed multipart upload for {Key} with ETag {ETag}",
                 completeResponse.Key, completeResponse.ETag);
@@ -757,7 +755,7 @@ public class MultipartUploadManager
                         UploadId = uploadId
                     };
 
-                    await _r2Client.MultipartUploads.AbortMultipartUploadAsync(abortRequest, cancellationToken);
+                    await _r2Client.AbortMultipartUploadAsync(abortRequest, cancellationToken);
                     _logger.LogInformation("Aborted multipart upload {UploadId} due to failure", uploadId);
                 }
                 catch (Exception abortEx)
@@ -785,8 +783,7 @@ public class MultipartUploadManager
                 BucketName = bucketName
             };
 
-            var uploads = await _r2Client.MultipartUploads
-                .ListMultipartUploadsAsync(listRequest, cancellationToken);
+            var uploads = await _r2Client.ListMultipartUploadsAsync(listRequest, cancellationToken);
 
             var oldUploads = uploads.Uploads
                 .Where(upload => upload.Initiated < cutoffDate)
@@ -806,7 +803,7 @@ public class MultipartUploadManager
                         UploadId = upload.UploadId
                     };
 
-                    await _r2Client.MultipartUploads.AbortMultipartUploadAsync(abortRequest, cancellationToken);
+                    await _r2Client.AbortMultipartUploadAsync(abortRequest, cancellationToken);
                     cleanedUploadIds.Add(upload.UploadId);
 
                     _logger.LogDebug("Cleaned up old upload {UploadId} for key {Key}",

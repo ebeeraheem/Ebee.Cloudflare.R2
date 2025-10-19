@@ -62,7 +62,7 @@ public class FileService
             ContentType = "application/octet-stream"
         };
 
-        var response = await _r2Client.Objects.PutObjectAsync(request);
+        var response = await _r2Client.PutObjectAsync(request);
         return response.ETag;
     }
 }
@@ -115,7 +115,7 @@ All operations may throw `R2Exception` with detailed error information:
 ```csharp
 try
 {
-    var response = await _r2Client.Objects.GetObjectAsync(request);
+    var response = await _r2Client.GetObjectAsync(request);
 }
 catch (R2Exception ex)
 {

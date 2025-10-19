@@ -1,10 +1,10 @@
 # Signed URLs
 
-The `SignedUrlsClient` provides methods for generating pre-signed URLs that allow temporary access to R2 objects without requiring authentication credentials. These URLs are perfect for secure file sharing, direct uploads from browsers, and temporary access control.
+The R2 client provides methods for generating pre-signed URLs that allow temporary access to R2 objects without requiring authentication credentials. These URLs are perfect for secure file sharing, direct uploads from browsers, and temporary access control.
 
 ## Getting Started
 
-The `SignedUrlsClient` is automatically registered when you configure the R2 client in your dependency injection container:
+The R2 client is automatically registered when you configure it in your dependency injection container:
 
 ```csharp
 services.AddR2Client(options =>
@@ -15,7 +15,7 @@ services.AddR2Client(options =>
 });
 ```
 
-Then inject `IR2Client` and access the signed URLs client:
+Then inject `IR2Client` and use the signed URL methods directly:
 
 ```csharp
 public class MyService
@@ -29,8 +29,9 @@ public class MyService
 
     public async Task GenerateSignedUrls()
     {
-        var signedUrlsClient = _r2Client.SignedUrls;
-        // Use signed URLs client methods...
+        // Use signed URL methods directly on the client
+        var response = _r2Client.GenerateGetSignedUrl(request);
+        // ...
     }
 }
 ```
@@ -49,7 +50,7 @@ var request = new R2GenerateGetSignedUrlRequest
     ExpiresIn = TimeSpan.FromHours(2)  // URL expires in 2 hours
 };
 
-var response = _r2Client.SignedUrls.GenerateGetSignedUrl(request);
+var response = _r2Client.GenerateGetSignedUrl(request);
 
 Console.WriteLine($"Signed URL: {response.SignedUrl}");
 Console.WriteLine($"Expires at: {response.ExpiresAt}");
@@ -72,7 +73,7 @@ var request = new R2GenerateGetSignedUrlRequest
     ResponseExpires = DateTime.UtcNow.AddHours(1)
 };
 
-var response = _r2Client.SignedUrls.GenerateGetSignedUrl(request);
+var response = _r2Client.GenerateGetSignedUrl(request);
 ```
 
 ### GET URL for Specific Version
@@ -88,7 +89,7 @@ var request = new R2GenerateGetSignedUrlRequest
     ExpiresIn = TimeSpan.FromDays(1)
 };
 
-var response = _r2Client.SignedUrls.GenerateGetSignedUrl(request);
+var response = _r2Client.GenerateGetSignedUrl(request);
 ```
 
 ### Expiration Options
@@ -136,7 +137,7 @@ var request = new R2GeneratePutSignedUrlRequest
     ExpiresIn = TimeSpan.FromMinutes(15)
 };
 
-var response = _r2Client.SignedUrls.GeneratePutSignedUrl(request);
+var response = _r2Client.GeneratePutSignedUrl(request);
 
 // Client can now upload directly to this URL
 Console.WriteLine($"Upload URL: {response.SignedUrl}");
@@ -166,7 +167,7 @@ var request = new R2GeneratePutSignedUrlRequest
     }
 };
 
-var response = _r2Client.SignedUrls.GeneratePutSignedUrl(request);
+var response = _r2Client.GeneratePutSignedUrl(request);
 ```
 
 ### PUT URL for Versioned Upload
@@ -183,7 +184,7 @@ var request = new R2GeneratePutSignedUrlRequest
     ExpiresIn = TimeSpan.FromHours(1)
 };
 
-var response = _r2Client.SignedUrls.GeneratePutSignedUrl(request);
+var response = _r2Client.GeneratePutSignedUrl(request);
 ```
 
 ## Generating DELETE Signed URLs
@@ -200,7 +201,7 @@ var request = new R2GenerateDeleteSignedUrlRequest
     ExpiresIn = TimeSpan.FromMinutes(10)
 };
 
-var response = _r2Client.SignedUrls.GenerateDeleteSignedUrl(request);
+var response = _r2Client.GenerateDeleteSignedUrl(request);
 
 Console.WriteLine($"Delete URL: {response.SignedUrl}");
 Console.WriteLine($"Expires at: {response.ExpiresAt}");
@@ -219,7 +220,7 @@ var request = new R2GenerateDeleteSignedUrlRequest
     ExpiresIn = TimeSpan.FromHours(1)
 };
 
-var response = _r2Client.SignedUrls.GenerateDeleteSignedUrl(request);
+var response = _r2Client.GenerateDeleteSignedUrl(request);
 ```
 
 ## Using Signed URLs
@@ -328,7 +329,7 @@ try
         ExpiresIn = TimeSpan.FromDays(8)  // Too long - exceeds 7 days
     };
     
-    var response = _r2Client.SignedUrls.GenerateGetSignedUrl(invalidRequest);
+    var response = _r2Client.GenerateGetSignedUrl(invalidRequest);
 }
 catch (R2Exception ex)
 {
@@ -343,7 +344,7 @@ All signed URL operations may throw `R2Exception` with specific error scenarios:
 ```csharp
 try
 {
-    var response = _r2Client.SignedUrls.GenerateGetSignedUrl(request);
+    var response = _r2Client.GenerateGetSignedUrl(request);
     // Use the signed URL
 }
 catch (R2Exception ex)
@@ -365,10 +366,10 @@ Common error scenarios:
 
 ## API Reference
 
-### ISignedUrlsClient Interface
+### IR2Client Interface (Signed URL Methods)
 
 ```csharp
-public interface ISignedUrlsClient
+public interface IR2Client
 {
     R2SignedUrlResponse GenerateGetSignedUrl(R2GenerateGetSignedUrlRequest request);
     R2SignedUrlResponse GeneratePutSignedUrl(R2GeneratePutSignedUrlRequest request);
@@ -483,7 +484,7 @@ public class SignedUrlManager
                 ResponseContentDisposition = $"attachment; filename=\"{Path.GetFileName(key)}\""
             };
 
-            var response = _r2Client.SignedUrls.GenerateGetSignedUrl(request);
+            var response = _r2Client.GenerateGetSignedUrl(request);
             
             _logger.LogInformation("Generated download URL for {Key} in bucket {BucketName}, expires at {ExpiresAt}",
                 key, bucketName, response.ExpiresAt);
@@ -516,7 +517,7 @@ public class SignedUrlManager
             request.Metadata["uploaded-via"] = "signed-url";
             request.Metadata["generated-at"] = DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss UTC");
 
-            var response = _r2Client.SignedUrls.GeneratePutSignedUrl(request);
+            var response = _r2Client.GeneratePutSignedUrl(request);
             
             _logger.LogInformation("Generated upload URL for {Key} in bucket {BucketName}, expires at {ExpiresAt}",
                 key, bucketName, response.ExpiresAt);
